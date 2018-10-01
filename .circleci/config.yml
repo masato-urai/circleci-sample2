@@ -22,8 +22,6 @@ jobs:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
       - restore_cache: # Yarnキャッシュを復元
           key: v1-yarn-{{ checksum "yarn.lock" }}-{{ arch }}
-      - restore_cache: # node_modulesを復元
-          key: v1-node-{{ checksum "package.json" }}-{{ arch }}
       - run: yarn cache list
       - run:
           name: Yarn Install
@@ -32,10 +30,6 @@ jobs:
           key: v1-yarn-{{ checksum "yarn.lock" }}-{{ arch }}
           paths:
             - ~/.cache/yarn
-      - save_cache: # node_modulesをキャッシュ
-          key: v1-node-{{ checksum "package.json" }}-{{ arch }}
-          paths:
-            - node_modules
 
 workflows:
   version: 2
