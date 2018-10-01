@@ -22,8 +22,6 @@ jobs:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
       - restore_cache: # Yarnキャッシュを復元
           key: v1-yarn-{{ checksum "yarn.lock" }}-{{ arch }}
-      - run: yarn cache dir
-      - run: yarn cache list
       - run:
           name: Yarn Install
           command: yarn install
