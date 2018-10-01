@@ -15,7 +15,7 @@ jobs:
           paths:
             - ~/repo
 
-  node_dependencies:
+  node_dependencies_with_yarn_cache:
     executor: default
     steps:
       - restore_cache: # ソースコードを復元
@@ -30,7 +30,7 @@ jobs:
           paths:
             - ~/.cache/yarn
 
-  node_dependencies_with_node_modules:
+  node_dependencies_with_yarn_cache_and_node_modules:
     executor: default
     steps:
       - restore_cache: # ソースコードを復元
@@ -51,14 +51,32 @@ jobs:
           paths:
             - node_modules
 
+  node_dependencies_with_node_modules:
+    executor: default
+    steps:
+      - restore_cache: # ソースコードを復元
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache: # node_modulesを復元
+          key: v1-node-{{ checksum "package.json" }}-{{ arch }}
+      - run:
+          name: Yarn Install
+          command: yarn install
+      - save_cache: # node_modulesをキャッシュ
+          key: v1-node-{{ checksum "package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+
 workflows:
   version: 2
   build:
     jobs:
       - checkout_code
-      - node_dependencies: # checkout_codeのあとに実行
+      - node_dependencies_with_yarn_cache:
           requires:
             - checkout_code
       - node_dependencies_with_node_modules:
+          requires:
+            - checkout_code
+      - node_dependencies_with_yarn_cache_and_node_modules:
           requires:
             - checkout_code
