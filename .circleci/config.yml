@@ -17,10 +17,12 @@ workflows:
   build-and-deploy:
     jobs:
       - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            tags:
-              only: /^v.*/
+    triggers:
+        - schedule:
+            cron: "0,30 * * * *"
+            filters:
+              branches:
+                  only:
+                    - sleep
+
 
