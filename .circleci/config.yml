@@ -17,12 +17,8 @@ workflows:
   build-and-deploy:
     jobs:
       - build
-    triggers:
-        - schedule:
-            cron: "0,30 * * * *"
-            filters:
-              branches:
-                  only:
-                    - sleep
+      - deploy:
+          type: approval
+
 
 
